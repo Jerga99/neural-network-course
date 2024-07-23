@@ -12,6 +12,6 @@ const trainInputs = [
 
 const trainLabels = [1, 1, 0, 0, 0];
 
-const weights = [0.1, 0.3];
+const weights = [0.1, -0.3];
 const b = 0.5; // bias
 const n = 0.1; // learning rate
