@@ -53,3 +53,42 @@ Biological Neuron:
 Videos to watch: https://www.youtube.com/watch?v=6qS83wD29PY
 
 Videos to watch: https://www.youtube.com/watch?v=hGDvvUNU-cw
+
+# Artificial Neuron (Perceptron)
+
+Inputs:
+  Function: Receive input data.
+  Similarity: Like dendrites receiving signals from other neurons.
+
+Weights:
+  Function: Scale the input data; represent the strength of the connections.
+  Similarity: Similar to synapses where the strength of the connection affects the signal transmission.
+
+Summation Function:
+  Function: Compute the weighted sum of inputs.
+  Similarity: Analogous to the cell body that processes incoming signals to determine the overall signal strength.
+
+Bias:
+  Function: Adds an extra parameter to the summation to shift the activation function.
+  Similarity: There is no direct equivalent in biological neurons, but it can be seen as a threshold adjustment similar to the baseline activity level in biological neurons.
+
+Activation Function:
+  Function: Produces the output based on the weighted sum; determines whether the neuron fires.
+  Similarity: Comparable to the axon hillock in biological neurons where the decision to fire an action potential is made.
+
+## Summary
+
+Biological Neuron:
+
+    Dendrites receive input signals.
+    Cell Body (Soma) processes the signals and decides whether to fire.
+    Axon transmits the signal to other neurons.
+    Synapses determine the strength of signal transmission.
+
+Artificial Neuron (Perceptron):
+
+    Inputs receive data.
+    Weights scale the inputs.
+    Summation Function calculates the weighted sum of inputs.
+    Bias adjusts the threshold.
+    Activation Function determines the final output.
