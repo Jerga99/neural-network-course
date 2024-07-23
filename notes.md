@@ -23,3 +23,33 @@ Shape Recognition:
 
     Basic Geometric Shapes: Differentiating between simple shapes like circles, squares, triangles, etc.
     Patterned Arrangements: Recognizing specific patterns or arrangements of shapes.
+
+
+# Overview of the Perceptron Model:
+
+A perceptron is a type of artificial neuron used for binary classification. It
+  1. processes inputs,
+  2. applies weights,
+  3. sums the results,
+  4. and uses an activation function to produce an output.
+
+Binary Classification is a type of classification task where the goal is to categorize data points into one of two distinct classes. In other words, the output is binary, meaning it can take on one of two possible values, often represented as 0 and 1, True and False, or any two distinct classes.
+
+Consider an email spam filter as an example of a binary classification task. The goal is to classify emails into two categories: "Spam" and "Not Spam".
+
+Biological Neuron:
+
+1. Dendrites (dendrajts):
+    Function: Receive signals from other neurons.
+2. Cell Body (Soma):
+    Function: Processes incoming signals and determines whether the neuron should fire an action potential.
+3. Axon:
+    Function: Transmits the output signal to other neurons.
+4. Synapses:
+    Function: Junctions between neurons where signals are transmitted
+
+
+
+Videos to watch: https://www.youtube.com/watch?v=6qS83wD29PY
+
+Videos to watch: https://www.youtube.com/watch?v=hGDvvUNU-cw
