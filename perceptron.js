@@ -10,7 +10,16 @@ const trainInputs = [
   [2, 1],
 ];
 
+const testInputs = [
+  [2, 6],
+  [3, 7],
+  [1, 3],
+  [2, 2],
+  [2, 5]
+];
+
 const trainLabels = [1, 1, 0, 0, 0];
+const testLabels = [1, 1, 0, 0, 1];
 
 class Perceptron {
   constructor(learningRate = 0.1) {
@@ -70,5 +79,15 @@ for (let epoch = 0; epoch < EPOCHS; epoch++) {
 }
 
 const trainingAccuracy = perceptron.calculateAccuracy(trainInputs, trainLabels);
+const testingAccuracy = perceptron.calculateAccuracy(testInputs, testLabels);
 
 console.log(`Training accuracy: ${trainingAccuracy}%`);
+console.log(`Testing accuracy: ${testingAccuracy}%`);
+
+
+// Overfitting Detection: High training accuracy with low testing accuracy indicates overfitting.
+// The model performs well on training data but fails to generalize to new, unseen data.
+
+// Underfitting Detection: Low training accuracy suggests underfitting, meaning the model is too simple to capture
+// the patterns in the training data, which likely results in poor performance on both training and testing data.
+
