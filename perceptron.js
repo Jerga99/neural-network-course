@@ -23,17 +23,19 @@ class Perceptron {
     return x >= 0 ? 1 : 0;
   }
 
+  predict(inputs) {
+    let sum = this.bias;
+    for (let j = 0; j < inputs.length; j++) {
+      sum += inputs[j] * this.weights[j];
+    }
+
+    return this.activationFunction(sum);
+  }
+
   train(trainData, trainLabels) {
     for (let i = 0; i < trainData.length; i++) {
-      let sum = this.bias;
       let inputs = trainData[i];
-
-      for (let j = 0; j < inputs.length; j++) {
-        sum += inputs[j] * this.weights[j];
-      }
-
-      console.log(sum);
-      const yp = this.activationFunction(sum);
+      const yp = this.predict(inputs);
       const yt = trainLabels[i];
 
       if (yt != yp) {
@@ -45,9 +47,28 @@ class Perceptron {
       }
     }
   }
+
+  calculateAccuracy(inputs, labels) {
+    let correct = 0;
+    for (let i = 0; i < inputs.length; i++) {
+      const yp = this.predict(inputs[i]);
+
+      if (yp === labels[i]) {
+        correct++;
+      }
+    }
+
+    return (correct / inputs.length) * 100;
+  }
 }
 
 const perceptron = new Perceptron();
-perceptron.train(trainInputs, trainLabels);
+const EPOCHS = 10;
 
-console.log(perceptron);
+for (let epoch = 0; epoch < EPOCHS; epoch++) {
+  perceptron.train(trainInputs, trainLabels);
+}
+
+const trainingAccuracy = perceptron.calculateAccuracy(trainInputs, trainLabels);
+
+console.log(`Training accuracy: ${trainingAccuracy}%`);
