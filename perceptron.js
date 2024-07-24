@@ -75,18 +75,19 @@ class Perceptron {
 }
 
 const perceptron = new Perceptron(0.07);
-const EPOCHS = 10;
+const EPOCHS = 9;
 
 for (let epoch = 0; epoch < EPOCHS; epoch++) {
   perceptron.train(trainInputs, trainLabels);
+
+  const trainingAccuracy = perceptron.calculateAccuracy(trainInputs, trainLabels);
+  const testingAccuracy = perceptron.calculateAccuracy(testInputs, testLabels);
+
+  console.log(`Epoch ${epoch + 1}`);
+  console.log(`Training accuracy: ${trainingAccuracy}%`);
+  console.log(`Testing accuracy: ${testingAccuracy}%`);
+  console.log('--------------------------------------')
 }
-
-const trainingAccuracy = perceptron.calculateAccuracy(trainInputs, trainLabels);
-const testingAccuracy = perceptron.calculateAccuracy(testInputs, testLabels);
-
-console.log(`Training accuracy: ${trainingAccuracy}%`);
-console.log(`Testing accuracy: ${testingAccuracy}%`);
-
 
 // Overfitting Detection: High training accuracy with low testing accuracy indicates overfitting.
 // The model performs well on training data but fails to generalize to new, unseen data.
