@@ -1,4 +1,6 @@
+import { useState } from "react";
 import Home from "./pages/Home";
+import PreviewTestImages from "./pages/mnist/PreviewTestImages";
 
 function Navigation() {
   return (
@@ -24,12 +26,24 @@ function Navigation() {
   );
 }
 
+function Router() {
+  const [pathname, setPathname] = useState(window.location.pathname);
+
+  switch(pathname) {
+    case "/mnist/test-images":
+       return <PreviewTestImages />;
+    default:
+      return <Home />;
+  }
+
+}
+
 function App() {
   return (
     <div className="App">
       <div className="app-container">
         <Navigation />
-        <Home />
+        <Router />
       </div>
     </div>
   );
