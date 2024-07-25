@@ -47,9 +47,23 @@ function readIdxFile(filepath) {
   }
 }
 
-const trainImages = readIdxFile("./datasets/mnist/train-images.idx3-ubyte");
-console.log(trainImages);
+function saveData(labels, inputs, path) {
+  const data = {
+    labels,
+    inputs
+  };
 
+  try {
+    fs.writeFileSync(`${path}.json`, JSON.stringify(data, null, 0));
+    console.log(`File ${path}.json saved!`);
+  } catch(e) {
+    console.log(e.message);
+  }
+}
 
-// const trainLabels = readIdxFile("./datasets/mnist/train-labels.idx1-ubyte");
-// console.log(trainLabels);
+const testImages = readIdxFile("./datasets/mnist/t10k-images.idx3-ubyte");
+const testLabels = readIdxFile("./datasets/mnist/t10k-labels.idx1-ubyte");
+
+saveData(testLabels.data, testImages.data, "./datasets/mnist/test-data");
+
+console.log("Parsing End!");
