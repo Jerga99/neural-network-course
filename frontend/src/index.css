@@ -11,3 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.App {
+  padding: 200px;
+}
+
+.page-header {
+  font-size: 23px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.link:hover {
+  cursor: pointer;
+  color: lightslategray;
+}
