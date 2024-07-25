@@ -21,14 +21,35 @@ function readIdxFile(filepath) {
     return {type: "labels", data: labels};
   } else {
     // image file
-
     const rows = data.readUint32BE(offset);
     offset += 4;
     const cols = data.readUint32BE(offset);
+    offset += 4;
+
+    const images = [];
+
+    for (let i = 0; i < numberOfItems; i++) {
+      const image = [];
+
+      for (let r = 0; r < rows; r++) {
+        const row = [];
+
+        for (let c = 0; c < cols; c++) {
+          row.push(data.readUint8(offset));
+          offset += 1;
+        }
+        image.push(row);
+      }
+      images.push(image);
+    }
+
+    return {type: "images", data: images};
   }
 }
 
-// readIdxFile("./datasets/mnist/train-images.idx3-ubyte");
+const trainImages = readIdxFile("./datasets/mnist/train-images.idx3-ubyte");
+console.log(trainImages);
 
-const trainLabels = readIdxFile("./datasets/mnist/train-labels.idx1-ubyte");
-console.log(trainLabels);
+
+// const trainLabels = readIdxFile("./datasets/mnist/train-labels.idx1-ubyte");
+// console.log(trainLabels);
