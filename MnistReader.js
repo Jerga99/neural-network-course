@@ -47,15 +47,33 @@ function readIdxFile(filepath) {
   }
 }
 
+const BATCH_SIZE = 5000;
+const MAX_BATCHES = 10;
+
 function saveData(labels, inputs, path) {
+  let batchTracker = 0;
+
+  for (let i = 0; i < labels.length; i += BATCH_SIZE) {
+    const labelsBatch = labels.slice(i, i + BATCH_SIZE);
+    const inputsBatch = inputs.slice(i, i + BATCH_SIZE);
+    saveBatch(i / BATCH_SIZE, labelsBatch, inputsBatch, path);
+    batchTracker++;
+
+    if (batchTracker === MAX_BATCHES) {
+      break;
+    }
+  }
+}
+
+function saveBatch(batch, labels, inputs, path) {
   const data = {
     labels,
     inputs
   };
 
   try {
-    fs.writeFileSync(`${path}.json`, JSON.stringify(data, null, 0));
-    console.log(`File ${path}.json saved!`);
+    fs.writeFileSync(`${path}-${batch}.json`, JSON.stringify(data, null, 0));
+    console.log(`File ${path}-${batch}.json saved!`);
   } catch(e) {
     console.log(e.message);
   }

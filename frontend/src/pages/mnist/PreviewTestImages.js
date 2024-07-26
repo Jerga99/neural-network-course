@@ -6,7 +6,7 @@ function PreviewTestImages() {
   const [mnistData, setMnistData] = useState(null);
 
   useEffect(() => {
-    fetch("/mnist/test-data.json")
+    fetch("/mnist/test-data-0.json")
       .then(response => response.json())
       .then(data => setMnistData(data));
   }, []);
@@ -23,7 +23,7 @@ function PreviewTestImages() {
         </div>
         <div className="page-content">
           <div className="image">
-            {JSON.stringify(mnistData.inputs)}
+            {/* {JSON.stringify(mnistData.inputs)} */}
           </div>
         </div>
       </div>
