@@ -11,9 +11,16 @@ function PreviewTestImages() {
       .then(data => setMnistData(data));
   }, []);
 
+  const createImageUrl = (inputs) => {
+
+
+  }
+
   if (!mnistData) {
     return <div>Loading...</div>
   }
+
+  const {inputs, labels} = mnistData;
 
   return (
     <>
@@ -22,8 +29,13 @@ function PreviewTestImages() {
           Mnist Test Images
         </div>
         <div className="page-content">
-          <div className="image">
-            {/* {JSON.stringify(mnistData.inputs)} */}
+          <div className="images">
+            {inputs.map((input, index) => (
+              <div key={index} className="image-container">
+                <img src={createImageUrl(input)} alt={`Digit ${labels[index]}`} />
+                <p>Label: {labels[index]}, Idx: {index}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
