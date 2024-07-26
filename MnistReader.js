@@ -79,10 +79,23 @@ function saveBatch(batch, labels, inputs, path) {
   }
 }
 
-const testImages = readIdxFile("./datasets/mnist/t10k-images.idx3-ubyte");
-const testLabels = readIdxFile("./datasets/mnist/t10k-labels.idx1-ubyte");
+function saveTestingData() {
+  const testImages = readIdxFile("./datasets/mnist/t10k-images.idx3-ubyte");
+  const testLabels = readIdxFile("./datasets/mnist/t10k-labels.idx1-ubyte");
 
-saveData(testLabels.data, testImages.data, "./datasets/mnist/test-data");
-saveData(testLabels.data, testImages.data, "./frontend/public/mnist/test-data");
+  saveData(testLabels.data, testImages.data, "./datasets/mnist/test-data");
+  saveData(testLabels.data, testImages.data, "./frontend/public/mnist/test-data");
+}
+
+function saveTrainingData() {
+  const trainImages = readIdxFile("./datasets/mnist/train-images.idx3-ubyte");
+  const trainLabels = readIdxFile("./datasets/mnist/train-labels.idx1-ubyte");
+
+  saveData(trainLabels.data, trainImages.data, "./datasets/mnist/train-data");
+}
+
+saveTestingData();
+saveTrainingData();
+
 
 console.log("Parsing End!");
