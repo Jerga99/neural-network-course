@@ -63,6 +63,25 @@ function shuffleArrays(array1, array2) {
   }
 }
 
+function findMisclassified(inputs, labels, perceptron) {
+  const misclassified = [];
+  for (let i = 0; i < inputs.length; i++) {
+    const prediction = perceptron.predict(inputs[i]);
+    if (prediction !== labels[i]) {
+      misclassified.push({index: i, image: inputs[i], label: labels[i], prediction})
+    }
+  }
+
+  return misclassified;
+}
+
+function displayMisclassified(misclassified) {
+  console.log(`Number of misclassified data: ${misclassified.length}`)
+  for (const item of misclassified) {
+    console.log(`Index: ${item.index}, label: ${item.label}, prediction: ${item.prediction}`);
+  }
+}
+
 const EPOCHS = 34;
 const TRAIN_BATCHES = 10;
 const TEST_BATCHES = 2;
@@ -98,8 +117,11 @@ for (let epoch = 0; epoch < EPOCHS; epoch++) {
   console.log('--------------------------------------')
 }
 
-console.log(perceptron.weights);
-console.log(perceptron.bias);
+const misclassified = findMisclassified(testInputs, testLabels, perceptron);
+displayMisclassified(misclassified);
+
+// console.log(perceptron.weights);
+// console.log(perceptron.bias);
 
 // Overfitting Detection: High training accuracy with low testing accuracy indicates overfitting.
 // The model performs well on training data but fails to generalize to new, unseen data.
