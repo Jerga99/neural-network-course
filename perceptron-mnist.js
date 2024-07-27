@@ -53,6 +53,23 @@ class Perceptron {
 
     return (correct / inputs.length) * 100;
   }
+
+  saveModel(path) {
+    console.log("Preparing export");
+    const exportData = {
+      weights: this.weights,
+      bias: this.bias
+    };
+
+    const stringData = JSON.stringify(exportData, null, 2);
+
+    try {
+      fs.writeFileSync(path, stringData);
+      console.log("File save to: " + path);
+    } catch(e) {
+      console.log("Save failed: " + e.message);
+    }
+  }
 }
 
 function shuffleArrays(array1, array2) {
@@ -119,6 +136,8 @@ for (let epoch = 0; epoch < EPOCHS; epoch++) {
 
 const misclassified = findMisclassified(testInputs, testLabels, perceptron);
 displayMisclassified(misclassified);
+
+perceptron.saveModel("./frontend/public/mnist/binary-model.json")
 
 // console.log(perceptron.weights);
 // console.log(perceptron.bias);
