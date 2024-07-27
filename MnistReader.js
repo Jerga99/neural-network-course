@@ -83,15 +83,21 @@ function saveTestingData() {
   const testImages = readIdxFile("./datasets/mnist/t10k-images.idx3-ubyte");
   const testLabels = readIdxFile("./datasets/mnist/t10k-labels.idx1-ubyte");
 
-  saveData(testLabels.data, testImages.data, "./datasets/mnist/test-data");
-  saveData(testLabels.data, testImages.data, "./frontend/public/mnist/test-data");
+  const binaryLabels = testLabels.data.map((label) => label === 0 ? 1 : 0);
+  const flatImages = testImages.data.map(image => image.flat());
+
+  saveData(binaryLabels, flatImages, "./datasets/mnist/test-data");
+  saveData(binaryLabels, testImages.data, "./frontend/public/mnist/test-data");
 }
 
 function saveTrainingData() {
   const trainImages = readIdxFile("./datasets/mnist/train-images.idx3-ubyte");
   const trainLabels = readIdxFile("./datasets/mnist/train-labels.idx1-ubyte");
 
-  saveData(trainLabels.data, trainImages.data, "./datasets/mnist/train-data");
+  const binaryLabels = trainLabels.data.map((label) => label === 0 ? 1 : 0);
+  const flatImages = trainImages.data.map(image => image.flat());
+
+  saveData(binaryLabels, flatImages, "./datasets/mnist/train-data");
 }
 
 saveTestingData();
