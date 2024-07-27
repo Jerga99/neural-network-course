@@ -8,7 +8,7 @@ seedrandom(seed, {global: true});
 class Perceptron {
   constructor(inputSize, learningRate = 0.1) {
     this.weights = Array(inputSize).fill(0).map(() => Math.random() * 0.3 - 0.1);
-    this.bias = Math.random() * 0.5 - 0.2;
+    this.bias = Math.random() * 0.3 - 0.1;
     this.learningRate = learningRate;
   }
 
@@ -55,12 +55,21 @@ class Perceptron {
   }
 }
 
-const EPOCHS = 44;
+function shuffleArrays(array1, array2) {
+  for (let i = array1.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array1[i], array1[j]] = [array1[j], array1[i]];
+    [array2[i], array2[j]] = [array2[j], array2[i]];
+  }
+}
+
+const EPOCHS = 34;
 const TRAIN_BATCHES = 10;
+const TEST_BATCHES = 2;
 const INPUT_SIZE = 28 * 28;
 
-const trainInputs = [];
-const trainLabels = [];
+const trainInputs = []; const testInputs = [];
+const trainLabels = []; const testLabels = [];
 
 for (let i = 0; i < TRAIN_BATCHES; i++) {
   const {inputs, labels} =  JSON.parse(fs.readFileSync(`./datasets/mnist/train-data-${i}.json`, "utf8"));
@@ -68,19 +77,29 @@ for (let i = 0; i < TRAIN_BATCHES; i++) {
   trainLabels.push(...labels);
 }
 
+for (let i = 0; i < TEST_BATCHES; i++) {
+  const {inputs, labels} =  JSON.parse(fs.readFileSync(`./datasets/mnist/test-data-${i}.json`, "utf8"));
+  testInputs.push(...inputs);
+  testLabels.push(...labels);
+}
+
 const perceptron = new Perceptron(INPUT_SIZE, 0.01);
 
 for (let epoch = 0; epoch < EPOCHS; epoch++) {
+  shuffleArrays(trainInputs, trainLabels);
   perceptron.train(trainInputs, trainLabels);
 
-  const trainingAccuracy = perceptron.calculateAccuracy(trainInputs, trainLabels);
-  // const testingAccuracy = perceptron.calculateAccuracy(testInputs, testLabels);
+  // const trainingAccuracy = perceptron.calculateAccuracy(trainInputs, trainLabels);
+  const testingAccuracy = perceptron.calculateAccuracy(testInputs, testLabels);
 
   console.log(`Epoch ${epoch + 1}`);
-  console.log(`Training accuracy: ${trainingAccuracy}%`);
-  // console.log(`Testing accuracy: ${testingAccuracy}%`);
+  // console.log(`Training accuracy: ${trainingAccuracy}%`);
+  console.log(`Testing accuracy: ${testingAccuracy}%`);
   console.log('--------------------------------------')
 }
+
+console.log(perceptron.weights);
+console.log(perceptron.bias);
 
 // Overfitting Detection: High training accuracy with low testing accuracy indicates overfitting.
 // The model performs well on training data but fails to generalize to new, unseen data.
