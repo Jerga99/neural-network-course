@@ -8,6 +8,7 @@ const SCALE = 10;
 function ImagePrediction() {
   const [binaryModel, setBinaryModel] = useState(null);
   const canvasRef = useRef(null);
+  const isDrawingRef = useRef(false);
 
   useEffect(() => {
     fetch("/mnist/binary-model.json")
@@ -27,18 +28,32 @@ function ImagePrediction() {
     ctx.fillStyle = 'black';
     ctx.fillRect(0,0, canvas.width, canvas.height);
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.7;
 
-    const startDrawing = () => {
-      console.log("start drawing!");
+    const startDrawing = (event) => {
+      const { offsetX, offsetY} = event;
+      const scaledX = offsetX / SCALE;
+      const scaledY = offsetY / SCALE;
+
+      ctx.beginPath();
+      ctx.moveTo(scaledX, scaledY);
+      isDrawingRef.current = true;
     };
 
-    const draw = () => {
-      console.log("draw!");
+    const draw = (event) => {
+      if (!isDrawingRef.current) return;
+
+      const { offsetX, offsetY} = event;
+      const scaledX = offsetX / SCALE;
+      const scaledY = offsetY / SCALE;
+
+      ctx.lineTo(scaledX, scaledY);
+      ctx.stroke();
     };
 
     const stopDrawing = () => {
-      console.log("stop drawing!");
+      ctx.closePath();
+      isDrawingRef.current = false;
     };
 
     canvas.addEventListener("mousedown", startDrawing);
