@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Home from "./pages/Home";
 import PreviewTestImages from "./pages/mnist/PreviewTestImages";
+import ImagePrediction from "./pages/mnist/ImagePrediction";
 
 function Navigation() {
 
@@ -24,8 +25,8 @@ function Navigation() {
           </div>
         </li>
         <li>
-          <div className="link" onClick={pushState("/mnist/test-perceptron")}>
-            Test Perceptron
+          <div className="link" onClick={pushState("/mnist/image-prediction")}>
+            Image Prediction
           </div>
         </li>
       </ul>
@@ -51,6 +52,8 @@ function Router() {
   switch(pathname) {
     case "/mnist/test-images":
        return <PreviewTestImages />;
+    case "/mnist/image-prediction":
+      return <ImagePrediction />;
     default:
       return <Home />;
   }
