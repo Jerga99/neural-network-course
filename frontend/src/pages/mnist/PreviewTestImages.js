@@ -19,8 +19,22 @@ function PreviewTestImages() {
       .then(data => setBinaryModel(data));
   }, []);
 
-  const predict = () => {
-    return 1;
+  const activationFunction = (sum) => {
+    return sum >= 0 ? 1 : 0;
+  }
+
+  const predict = (image) => {
+    let sum = binaryModel.bias;
+
+    const inputs = image.flat();
+
+    binaryModel.weights.forEach((weight, i) => {
+      sum += weight * inputs[i];
+    });
+
+    const prediction = activationFunction(sum);
+
+    return prediction;
   }
 
   const makeAllPredictions = () => {
@@ -28,11 +42,11 @@ function PreviewTestImages() {
       return;
     }
 
-    debugger
     const newPredictions = mnistData.inputs.map(image => {
       return predict(image);
     });
 
+    console.log(newPredictions);
     setPredictions(newPredictions);
   }
 
