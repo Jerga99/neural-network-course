@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 function PreviewTestImages() {
   const [mnistData, setMnistData] = useState(null);
+  const [binaryModel, setBinaryModel] = useState(null);
+  const [predictions, setPredictions] = useState([]);
 
   useEffect(() => {
     fetch("/mnist/test-data-0.json")
@@ -11,8 +13,30 @@ function PreviewTestImages() {
       .then(data => setMnistData(data));
   }, []);
 
-  const createImageUrl = (inputs) => {
+  useEffect(() => {
+    fetch("/mnist/binary-model.json")
+      .then(response => response.json())
+      .then(data => setBinaryModel(data));
+  }, []);
+
+  const predict = () => {
+    return 1;
+  }
+
+  const makeAllPredictions = () => {
+    if (!binaryModel) {
+      return;
+    }
+
     debugger
+    const newPredictions = mnistData.inputs.map(image => {
+      return predict(image);
+    });
+
+    setPredictions(newPredictions);
+  }
+
+  const createImageUrl = (inputs) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     canvas.width = 28;
@@ -48,6 +72,9 @@ function PreviewTestImages() {
           Mnist Test Images
         </div>
         <div className="page-content">
+          <div style={{marginBottom: 20}}>
+            <button onClick={makeAllPredictions}>Make Predictions</button>
+          </div>
           <div className="images">
             {inputs.map((input, index) => (
               <div key={index} className="image-container">
