@@ -79,7 +79,7 @@ function saveBatch(batch, labels, inputs, path) {
   }
 }
 
-const PIXEL_KEEP_TRESHOLD = 200;
+const PIXEL_KEEP_TRESHOLD = 0;
 
 function saveTestingData() {
   const testImages = readIdxFile("./datasets/mnist/t10k-images.idx3-ubyte");
