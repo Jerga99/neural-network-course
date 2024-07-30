@@ -89,9 +89,6 @@ function ImagePrediction() {
 
   const predict = () => {
     const inputs = preprocessCanvas();
-
-    console.log(inputs);
-
     let sum = binaryModel.bias;
 
     binaryModel.weights.forEach((weight, i) => {
@@ -101,6 +98,15 @@ function ImagePrediction() {
     const prediction = activationFunction(sum);
     console.log(prediction);
     setPrediction(prediction);
+  }
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    setPrediction(null);
   }
 
   return (
@@ -115,12 +121,14 @@ function ImagePrediction() {
         />
       </div>
       <div>
-        <button>Clear</button>
+        <button onClick={clearCanvas}>Clear</button>
         <button onClick={predict}>Prediction</button>
       </div>
-      <div>
-        Prediction: IS ZERO
-      </div>
+      { prediction !== null &&
+        <div>
+          Prediction: {prediction === 1 ? "Number is Zero" : "Number is 1 - 9"}
+        </div>
+      }
     </div>
   )
 }
