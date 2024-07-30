@@ -7,6 +7,7 @@ const SCALE = 10;
 
 function ImagePrediction() {
   const [binaryModel, setBinaryModel] = useState(null);
+  const [prediction, setPrediction] = useState(null);
   const canvasRef = useRef(null);
   const isDrawingRef = useRef(false);
 
@@ -28,7 +29,7 @@ function ImagePrediction() {
     ctx.fillStyle = 'black';
     ctx.fillRect(0,0, canvas.width, canvas.height);
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
 
     const startDrawing = (event) => {
       const { offsetX, offsetY} = event;
@@ -82,8 +83,24 @@ function ImagePrediction() {
     return grayScaleData;
   }
 
+  const activationFunction = (sum) => {
+    return sum >= 0 ? 1 : 0;
+  }
+
   const predict = () => {
     const inputs = preprocessCanvas();
+
+    console.log(inputs);
+
+    let sum = binaryModel.bias;
+
+    binaryModel.weights.forEach((weight, i) => {
+      sum += weight * inputs[i];
+    });
+
+    const prediction = activationFunction(sum);
+    console.log(prediction);
+    setPrediction(prediction);
   }
 
   return (
