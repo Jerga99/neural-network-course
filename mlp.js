@@ -18,12 +18,17 @@ class MLP {
     this.biasesOutput = [0.1, 0.1];
   }
 
+  reluActivation(z) {
+    return Math.max(0, z);
+  }
+
   forward(inputs) {
-    const hiddenSum = this.weightsInputHidden.map((weights, i) => {
+    const hiddenSums = this.weightsInputHidden.map((weights, i) => {
       return weights.reduce((sum, weight, j) => sum + (weight * inputs[j]), this.biasesHidden[i]);
     });
 
-    console.log(hiddenSum);
+    const hiddenActivations = hiddenSums.map(z => this.reluActivation(z));
+    console.log(hiddenActivations);
   }
 }
 
