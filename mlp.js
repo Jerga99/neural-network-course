@@ -28,7 +28,12 @@ class MLP {
     });
 
     const hiddenActivations = hiddenSums.map(z => this.reluActivation(z));
-    console.log(hiddenActivations);
+
+    const outputSums = this.weightsHiddenOutput.map((weights, i) => {
+      return weights.reduce((sum, weight, j) => sum + (weight * hiddenActivations[j]), this.biasesOutput[i])
+    });
+
+    console.log(outputSums);
   }
 }
 
