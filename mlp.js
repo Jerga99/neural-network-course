@@ -16,19 +16,14 @@ class MLP {
     ];
 
     this.biasesOutput = [0.1, 0.1];
+
+    this.outputSums = [];
+    this.outputProbabilities = [];
   }
 
   reluActivation(z) {
     return Math.max(0, z);
   }
-
-  // softmax(outputs) {
-  //   return outputs.map((output, i) => {
-  //     const nominator = Math.exp(output);
-  //     const denominator = outputs.reduce((sum, val) => sum + Math.exp(val), 0);
-  //     return nominator / denominator;
-  //   });
-  // }
 
   softmax(outputs) {
     const maxOutput = Math.max(...outputs);
@@ -44,16 +39,22 @@ class MLP {
 
     const hiddenActivations = hiddenSums.map(z => this.reluActivation(z));
 
-    const outputSums = this.weightsHiddenOutput.map((weights, i) => {
+    this.outputSums = this.weightsHiddenOutput.map((weights, i) => {
       return weights.reduce((sum, weight, j) => sum + (weight * hiddenActivations[j]), this.biasesOutput[i])
     });
 
-    return this.softmax(outputSums);
+    this.outputProbabilities = this.softmax(this.outputSums);
+  }
+
+  train(inputs) {
+    this.forward(inputs)
   }
 }
 
 const mlp = new MLP();
 const image = [0.1, 0.2, 0.3, 0.4];
 
-const outputProbabilities = mlp.forward(image);
-console.log(outputProbabilities)
+mlp.train(image);
+
+console.log(mlp.outputSums);
+console.log(mlp.outputProbabilities);
