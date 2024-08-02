@@ -46,15 +46,22 @@ class MLP {
     this.outputProbabilities = this.softmax(this.outputSums);
   }
 
-  train(inputs) {
-    this.forward(inputs)
+  backward(targets) {
+    const outputDeltas = this.outputProbabilities.map((probability, i) => probability - targets[i]);
+    console.log("Output deltas: " + outputDeltas);
+  }
+
+  train(inputs, targets) {
+    this.forward(inputs);
+    this.backward(targets);
   }
 }
 
 const mlp = new MLP();
 const image = [0.1, 0.2, 0.3, 0.4];
+const targets = [1, 0];
 
-mlp.train(image);
+mlp.train(image, targets);
 
-console.log(mlp.outputSums);
-console.log(mlp.outputProbabilities);
+console.log("Output sums: " + mlp.outputSums);
+console.log("Output probabilities: " + mlp.outputProbabilities);
