@@ -19,10 +19,15 @@ class MLP {
 
     this.outputSums = [];
     this.outputProbabilities = [];
+    this.hiddenSums = [];
   }
 
   reluActivation(z) {
     return Math.max(0, z);
+  }
+
+  reluDerivate(z) {
+    return z > 0 ? 1 : 0;
   }
 
   softmax(outputs) {
@@ -33,13 +38,13 @@ class MLP {
   }
 
   forward(inputs) {
-    const hiddenSums = this.weightsInputHidden.map((weights, i) => {
+    this.hiddenSums = this.weightsInputHidden.map((weights, i) => {
       return weights.reduce((sum, weight, j) => sum + (weight * inputs[j]), this.biasesHidden[i]);
     });
 
-    console.log("Hidden sums: " + hiddenSums);
+    console.log("Hidden sums: " + this.hiddenSums);
 
-    const hiddenActivations = hiddenSums.map(z => this.reluActivation(z));
+    const hiddenActivations = this.hiddenSums.map(z => this.reluActivation(z));
 
     this.outputSums = this.weightsHiddenOutput.map((weights, i) => {
       return weights.reduce((sum, weight, j) => sum + (weight * hiddenActivations[j]), this.biasesOutput[i])
@@ -51,6 +56,13 @@ class MLP {
   backward(targets) {
     const outputDeltas = this.outputProbabilities.map((probability, i) => probability - targets[i]);
     console.log("Output deltas: " + outputDeltas);
+
+    const hiddenDeltas = this.hiddenSums.map((z, i) => {
+      const error = outputDeltas.reduce((sum, delta, j) => sum + delta * this.weightsHiddenOutput[j][i], 0);
+      return error * this.reluDerivate(z);
+    });
+
+    console.log("Hidden deltas: " + hiddenDeltas);
   }
 
   train(inputs, targets) {
