@@ -60,7 +60,7 @@ class MLP {
     console.log("Output probabilities: " + this.outputProbabilities);
   }
 
-  backward(targets) {
+  backward(inputs, targets) {
     const outputDeltas = this.outputProbabilities.map((probability, i) => probability - targets[i]);
     console.log("Output deltas: " + outputDeltas);
 
@@ -72,20 +72,31 @@ class MLP {
     console.log("Hidden deltas: " + hiddenDeltas);
 
     this.weightsHiddenOutput = this.weightsHiddenOutput.map((weights, i) => {
-      return weights.map((weight, j) => weight - this.learningRate * outputDeltas[i] * this.hiddenActivations[j])
+      return weights.map((weight, j) => weight - this.learningRate * outputDeltas[i] * this.hiddenActivations[j]);
     });
 
     this.biasesOutput = this.biasesOutput.map((bias, i) => {
       return bias - this.learningRate * outputDeltas[i];
     });
 
+    this.weightsInputHidden = this.weightsInputHidden.map((weights, i) => {
+      return weights.map((weight, j) => weight - this.learningRate * hiddenDeltas[i] * inputs[j]);
+    });
+
+    this.biasesHidden = this.biasesHidden.map((bias, i) => {
+      return bias - this.learningRate * hiddenDeltas[i]
+    });
+
     console.log("Weights h->o: " + this.weightsHiddenOutput);
     console.log("Biases output: " + this.biasesOutput);
+
+    console.log("Weights i->h: " + this.weightsInputHidden);
+    console.log("Biases hidden: " + this.biasesHidden);
   }
 
   train(inputs, targets) {
     this.forward(inputs);
-    this.backward(targets);
+    this.backward(inputs, targets);
   }
 }
 
