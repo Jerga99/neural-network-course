@@ -1,23 +1,28 @@
 
+const seedrandom = require("seedrandom");
+const seed = "perc-1";
 
+seedrandom(seed, {global: true});
+
+function randomize() {
+  return Math.random() * 0.3 - 0.1;
+}
 
 class MLP {
-  constructor() {
+  constructor(inputSize, hiddenSize, outputSize) {
     this.learningRate = 0.01;
 
-    this.weightsInputHidden = [
-      [0.5, 0.5, 0.5, 0.5], // Weights for hidden neuron 1
-      [-0.5, -0.5, -0.5, -0.5] // Weights for hidden neuron 2
-    ];
+    this.weightsInputHidden = Array.from({length: hiddenSize}, () =>
+      Array.from({length: inputSize}, randomize)
+    );
 
-    this.biasesHidden = [0.1, -0.1];
+    this.biasesHidden = Array.from({length: hiddenSize}, randomize);
 
-    this.weightsHiddenOutput = [
-      [1.0, -1.0], // Weights for output neuron 1
-      [-1.0, 1.0]  // Weights for output neuron 2
-    ];
+    this.weightsHiddenOutput =  Array.from({length: outputSize}, () =>
+      Array.from({length: hiddenSize}, randomize)
+    );
 
-    this.biasesOutput = [0.1, 0.1];
+    this.biasesOutput = Array.from({length: outputSize}, randomize);
 
     this.outputSums = [];
     this.outputProbabilities = [];
@@ -85,7 +90,13 @@ class MLP {
   }
 }
 
-const mlp = new MLP();
+const inputSize = 4;
+const hiddenSize = 2;
+const outputSize = 2;
+
+const mlp = new MLP(inputSize, hiddenSize, outputSize);
+console.log("Before training");
+console.log(mlp);
 
 const trainingData = [
   {inputs: [0.1, 0.2, 0.3, 0.4], targets: [1, 0]},
@@ -102,5 +113,6 @@ for (let epoch = 0; epoch < EPOCHS; epoch++) {
   }
 }
 
+console.log("After training");
 console.log(mlp);
 
