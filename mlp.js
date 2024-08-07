@@ -108,6 +108,11 @@ const trainingData = [
   {inputs: [0.4, 0.5, 0.6, 0.7], targets: [0, 1]},
 ];
 
+const testingData = [
+  {inputs: [0.2, 0.3, 0.4, 0.5], targets: [1, 0]},
+  {inputs: [0.6, 0.7, 0.8, 0.9], targets: [0, 1]}
+];
+
 const EPOCHS = 100;
 
 for (let epoch = 0; epoch < EPOCHS; epoch++) {
@@ -121,4 +126,22 @@ for (let epoch = 0; epoch < EPOCHS; epoch++) {
     console.log(`Epoch ${epoch}, Loss: ${totalLoss / trainingData.length}`);
   }
 }
+
+let correctPredictions = 0;
+
+for (let i = 0; i < testingData.length; i++) {
+  const targets = testingData[i].targets;
+  const outputProbabilities = mlp.forward(testingData[i].inputs);
+
+  const predicted = outputProbabilities.indexOf(Math.max(...outputProbabilities));
+
+  const target = targets.indexOf(Math.max(...targets))
+
+  if (predicted === target) {
+    correctPredictions++;
+  }
+}
+
+const accuracy = (correctPredictions / testingData.length) * 100;
+console.log(`Accuracy: ${accuracy}%`);
 
