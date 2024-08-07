@@ -45,31 +45,22 @@ class MLP {
       return weights.reduce((sum, weight, j) => sum + (weight * inputs[j]), this.biasesHidden[i]);
     });
 
-    console.log("Hidden sums: " + this.hiddenSums);
-
     this.hiddenActivations = this.hiddenSums.map(z => this.reluActivation(z));
 
     this.outputSums = this.weightsHiddenOutput.map((weights, i) => {
       return weights.reduce((sum, weight, j) => sum + (weight * this.hiddenActivations[j]), this.biasesOutput[i])
     });
 
-    console.log("Output sums: " + this.outputSums);
-
     this.outputProbabilities = this.softmax(this.outputSums);
-
-    console.log("Output probabilities: " + this.outputProbabilities);
   }
 
   backward(inputs, targets) {
     const outputDeltas = this.outputProbabilities.map((probability, i) => probability - targets[i]);
-    console.log("Output deltas: " + outputDeltas);
 
     const hiddenDeltas = this.hiddenSums.map((z, i) => {
       const error = outputDeltas.reduce((sum, delta, j) => sum + delta * this.weightsHiddenOutput[j][i], 0);
       return error * this.reluDerivate(z);
     });
-
-    console.log("Hidden deltas: " + hiddenDeltas);
 
     this.weightsHiddenOutput = this.weightsHiddenOutput.map((weights, i) => {
       return weights.map((weight, j) => weight - this.learningRate * outputDeltas[i] * this.hiddenActivations[j]);
@@ -86,12 +77,6 @@ class MLP {
     this.biasesHidden = this.biasesHidden.map((bias, i) => {
       return bias - this.learningRate * hiddenDeltas[i]
     });
-
-    console.log("Weights h->o: " + this.weightsHiddenOutput);
-    console.log("Biases output: " + this.biasesOutput);
-
-    console.log("Weights i->h: " + this.weightsInputHidden);
-    console.log("Biases hidden: " + this.biasesHidden);
   }
 
   train(inputs, targets) {
@@ -101,8 +86,21 @@ class MLP {
 }
 
 const mlp = new MLP();
-const image = [0.1, 0.2, 0.3, 0.4];
-const targets = [1, 0];
 
-mlp.train(image, targets);
+const trainingData = [
+  {inputs: [0.1, 0.2, 0.3, 0.4], targets: [1, 0]},
+  {inputs: [0.5, 0.6, 0.7, 0.8], targets: [0, 1]},
+  {inputs: [0.9, 0.1, 0.2, 0.3], targets: [1, 0]},
+  {inputs: [0.4, 0.5, 0.6, 0.7], targets: [0, 1]},
+];
+
+const EPOCHS = 100;
+
+for (let epoch = 0; epoch < EPOCHS; epoch++) {
+  for (let i = 0; i <  trainingData.length; i++) {
+    mlp.train(trainingData[i].inputs, trainingData[i].targets);
+  }
+}
+
+console.log(mlp);
 
