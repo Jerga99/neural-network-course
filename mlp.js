@@ -1,4 +1,5 @@
 
+const fs = require("fs");
 const seedrandom = require("seedrandom");
 const seed = "perc-1";
 
@@ -10,6 +11,10 @@ function randomize() {
 
 function mseLoss(outputs, targets) {
   return 0.5 * outputs.reduce((sum, output, i) => sum + (output - targets[i]) ** 2, 0);
+}
+
+function normalizeData(data) {
+  return data.map(input => input.map(pixel => pixel / 255.0));
 }
 
 class MLP {
@@ -95,53 +100,64 @@ class MLP {
   }
 }
 
-const inputSize = 4;
-const hiddenSize = 2;
-const outputSize = 2;
+// --- Model Training Part---
+
+const EPOCHS = 100;
+const TRAIN_BATCHES = 2;
+const TEST_BATCHES = 2;
+
+const trainInputs = []; const testInputs = [];
+const trainLabels = []; const testLabels = [];
+
+for (let i = 0; i < TRAIN_BATCHES; i++) {
+  const {inputs, labels} =  JSON.parse(fs.readFileSync(`./datasets/mnist/train-data-${i}.json`, "utf8"));
+  trainInputs.push(...normalizeData(inputs));
+  trainLabels.push(...labels);
+}
+
+for (let i = 0; i < TEST_BATCHES; i++) {
+  const {inputs, labels} =  JSON.parse(fs.readFileSync(`./datasets/mnist/test-data-${i}.json`, "utf8"));
+  testInputs.push(...normalizeData(inputs));
+  testLabels.push(...labels);
+}
+
+const inputSize = trainInputs[0].length;
+const hiddenSize = 32;
+const outputSize = 10;
 
 const mlp = new MLP(inputSize, hiddenSize, outputSize);
 
-const trainingData = [
-  {inputs: [0.1, 0.2, 0.3, 0.4], targets: [1, 0]},
-  {inputs: [0.5, 0.6, 0.7, 0.8], targets: [0, 1]},
-  {inputs: [0.9, 0.1, 0.2, 0.3], targets: [1, 0]},
-  {inputs: [0.4, 0.5, 0.6, 0.7], targets: [0, 1]},
-];
+console.log(mlp);
 
-const testingData = [
-  {inputs: [0.2, 0.3, 0.4, 0.5], targets: [1, 0]},
-  {inputs: [0.6, 0.7, 0.8, 0.9], targets: [0, 1]}
-];
 
-const EPOCHS = 100;
 
-for (let epoch = 0; epoch < EPOCHS; epoch++) {
-  let totalLoss = 0;
-  for (let i = 0; i <  trainingData.length; i++) {
-    mlp.train(trainingData[i].inputs, trainingData[i].targets);
-    totalLoss += mseLoss(mlp.outputProbabilities, trainingData[i].targets);
-  }
+// for (let epoch = 0; epoch < EPOCHS; epoch++) {
+//   let totalLoss = 0;
+//   for (let i = 0; i <  trainingData.length; i++) {
+//     mlp.train(trainingData[i].inputs, trainingData[i].targets);
+//     totalLoss += mseLoss(mlp.outputProbabilities, trainingData[i].targets);
+//   }
 
-  if (epoch % 2 == 0) {
-    console.log(`Epoch ${epoch}, Loss: ${totalLoss / trainingData.length}`);
-  }
-}
+//   if (epoch % 2 == 0) {
+//     console.log(`Epoch ${epoch}, Loss: ${totalLoss / trainingData.length}`);
+//   }
+// }
 
-let correctPredictions = 0;
+// let correctPredictions = 0;
 
-for (let i = 0; i < testingData.length; i++) {
-  const targets = testingData[i].targets;
-  const outputProbabilities = mlp.forward(testingData[i].inputs);
+// for (let i = 0; i < testingData.length; i++) {
+//   const targets = testingData[i].targets;
+//   const outputProbabilities = mlp.forward(testingData[i].inputs);
 
-  const predicted = outputProbabilities.indexOf(Math.max(...outputProbabilities));
+//   const predicted = outputProbabilities.indexOf(Math.max(...outputProbabilities));
 
-  const target = targets.indexOf(Math.max(...targets))
+//   const target = targets.indexOf(Math.max(...targets))
 
-  if (predicted === target) {
-    correctPredictions++;
-  }
-}
+//   if (predicted === target) {
+//     correctPredictions++;
+//   }
+// }
 
-const accuracy = (correctPredictions / testingData.length) * 100;
-console.log(`Accuracy: ${accuracy}%`);
+// const accuracy = (correctPredictions / testingData.length) * 100;
+// console.log(`Accuracy: ${accuracy}%`);
 
