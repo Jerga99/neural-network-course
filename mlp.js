@@ -8,6 +8,10 @@ function randomize() {
   return Math.random() * 0.3 - 0.1;
 }
 
+function mseLoss(outputs, targets) {
+  return 0.5 * outputs.reduce((sum, output, i) => sum + (output - targets[i]) ** 2, 0);
+}
+
 class MLP {
   constructor(inputSize, hiddenSize, outputSize) {
     this.learningRate = 0.01;
@@ -57,6 +61,7 @@ class MLP {
     });
 
     this.outputProbabilities = this.softmax(this.outputSums);
+    return this.outputProbabilities;
   }
 
   backward(inputs, targets) {
@@ -95,8 +100,6 @@ const hiddenSize = 2;
 const outputSize = 2;
 
 const mlp = new MLP(inputSize, hiddenSize, outputSize);
-console.log("Before training");
-console.log(mlp);
 
 const trainingData = [
   {inputs: [0.1, 0.2, 0.3, 0.4], targets: [1, 0]},
@@ -108,11 +111,14 @@ const trainingData = [
 const EPOCHS = 100;
 
 for (let epoch = 0; epoch < EPOCHS; epoch++) {
+  let totalLoss = 0;
   for (let i = 0; i <  trainingData.length; i++) {
     mlp.train(trainingData[i].inputs, trainingData[i].targets);
+    totalLoss += mseLoss(mlp.outputProbabilities, trainingData[i].targets);
+  }
+
+  if (epoch % 2 == 0) {
+    console.log(`Epoch ${epoch}, Loss: ${totalLoss / trainingData.length}`);
   }
 }
-
-console.log("After training");
-console.log(mlp);
 
