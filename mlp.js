@@ -106,7 +106,7 @@ class MLP {
 
 // --- Model Training Part---
 
-const EPOCHS = 100;
+const EPOCHS = 20;
 const TRAIN_BATCHES = 2;
 const TEST_BATCHES = 2;
 
@@ -134,37 +134,33 @@ const outputSize = 10;
 
 const mlp = new MLP(inputSize, hiddenSize, outputSize);
 
-console.log(mlp);
+for (let epoch = 0; epoch < EPOCHS; epoch++) {
+  let totalLoss = 0;
+  for (let i = 0; i < trainInputs.length; i++) {
+    mlp.train(trainInputs[i], trainLabelsEncoded[i]);
+    totalLoss += mseLoss(mlp.outputProbabilities, trainLabelsEncoded[i]);
+  }
 
+  if (epoch % 2 == 0) {
+    console.log(`Epoch ${epoch}, Loss: ${totalLoss / trainInputs.length}`);
+  }
+}
 
+let correctPredictions = 0;
 
-// for (let epoch = 0; epoch < EPOCHS; epoch++) {
-//   let totalLoss = 0;
-//   for (let i = 0; i <  trainingData.length; i++) {
-//     mlp.train(trainingData[i].inputs, trainingData[i].targets);
-//     totalLoss += mseLoss(mlp.outputProbabilities, trainingData[i].targets);
-//   }
+for (let i = 0; i < testInputs.length; i++) {
+  const targets = testLabelsEncoded[i];
+  const outputProbabilities = mlp.forward(testInputs[i]);
 
-//   if (epoch % 2 == 0) {
-//     console.log(`Epoch ${epoch}, Loss: ${totalLoss / trainingData.length}`);
-//   }
-// }
+  const predicted = outputProbabilities.indexOf(Math.max(...outputProbabilities));
 
-// let correctPredictions = 0;
+  const target = targets.indexOf(Math.max(...targets))
 
-// for (let i = 0; i < testingData.length; i++) {
-//   const targets = testingData[i].targets;
-//   const outputProbabilities = mlp.forward(testingData[i].inputs);
+  if (predicted === target) {
+    correctPredictions++;
+  }
+}
 
-//   const predicted = outputProbabilities.indexOf(Math.max(...outputProbabilities));
-
-//   const target = targets.indexOf(Math.max(...targets))
-
-//   if (predicted === target) {
-//     correctPredictions++;
-//   }
-// }
-
-// const accuracy = (correctPredictions / testingData.length) * 100;
-// console.log(`Accuracy: ${accuracy}%`);
+const accuracy = (correctPredictions / testInputs.length) * 100;
+console.log(`Accuracy: ${accuracy}%`);
 
