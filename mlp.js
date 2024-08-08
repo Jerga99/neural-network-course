@@ -17,6 +17,10 @@ function normalizeData(data) {
   return data.map(input => input.map(pixel => pixel / 255.0));
 }
 
+function oneHotEncode(label) {
+  return Array.from({length: 10}, (_, i) => i == label ? 1 : 0)
+}
+
 class MLP {
   constructor(inputSize, hiddenSize, outputSize) {
     this.learningRate = 0.01;
@@ -120,6 +124,9 @@ for (let i = 0; i < TEST_BATCHES; i++) {
   testInputs.push(...normalizeData(inputs));
   testLabels.push(...labels);
 }
+
+const trainLabelsEncoded = trainLabels.map(label => oneHotEncode(label));
+const testLabelsEncoded = testLabels.map(label => oneHotEncode(label));
 
 const inputSize = trainInputs[0].length;
 const hiddenSize = 32;
