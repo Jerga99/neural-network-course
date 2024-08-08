@@ -106,7 +106,7 @@ class MLP {
 
 // --- Model Training Part---
 
-const EPOCHS = 20;
+const EPOCHS = 8;
 const TRAIN_BATCHES = 2;
 const TEST_BATCHES = 2;
 
@@ -134,7 +134,7 @@ const outputSize = 10;
 
 const mlp = new MLP(inputSize, hiddenSize, outputSize);
 
-for (let epoch = 0; epoch < EPOCHS; epoch++) {
+for (let epoch = 0; epoch <= EPOCHS; epoch++) {
   let totalLoss = 0;
   for (let i = 0; i < trainInputs.length; i++) {
     mlp.train(trainInputs[i], trainLabelsEncoded[i]);
@@ -142,25 +142,25 @@ for (let epoch = 0; epoch < EPOCHS; epoch++) {
   }
 
   if (epoch % 2 == 0) {
-    console.log(`Epoch ${epoch}, Loss: ${totalLoss / trainInputs.length}`);
+    let correctPredictions = 0;
+
+    for (let j = 0; j < testInputs.length; j++) {
+      const targets = testLabelsEncoded[j];
+      const outputProbabilities = mlp.forward(testInputs[j]);
+
+      const predicted = outputProbabilities.indexOf(Math.max(...outputProbabilities));
+
+      const target = targets.indexOf(Math.max(...targets))
+
+      if (predicted === target) {
+        correctPredictions++;
+      }
+    }
+
+    const accuracy = (correctPredictions / testInputs.length) * 100;
+    console.log(`Epoch ${epoch}, Accuracy: ${accuracy}%, Loss: ${totalLoss / trainInputs.length}, Correct Predictions: ${correctPredictions}/${testInputs.length}`);
   }
 }
 
-let correctPredictions = 0;
 
-for (let i = 0; i < testInputs.length; i++) {
-  const targets = testLabelsEncoded[i];
-  const outputProbabilities = mlp.forward(testInputs[i]);
-
-  const predicted = outputProbabilities.indexOf(Math.max(...outputProbabilities));
-
-  const target = targets.indexOf(Math.max(...targets))
-
-  if (predicted === target) {
-    correctPredictions++;
-  }
-}
-
-const accuracy = (correctPredictions / testInputs.length) * 100;
-console.log(`Accuracy: ${accuracy}%`);
 
