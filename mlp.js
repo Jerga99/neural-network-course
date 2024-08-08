@@ -102,6 +102,25 @@ class MLP {
     this.forward(inputs);
     this.backward(inputs, targets);
   }
+
+  saveModel(path) {
+    console.log("Preparing export");
+    const exportData = {
+      weightsInputHidden: this.weightsInputHidden,
+      biasesHidden: this.biasesHidden,
+      weightsHiddenOutput: this.weightsHiddenOutput,
+      biasesOutput: this.biasesOutput
+    };
+
+    const stringData = JSON.stringify(exportData, null, 2);
+
+    try {
+      fs.writeFileSync(path, stringData);
+      console.log("File save to: " + path);
+    } catch(e) {
+      console.log("Save failed: " + e.message);
+    }
+  }
 }
 
 // --- Model Training Part---
@@ -162,5 +181,5 @@ for (let epoch = 0; epoch <= EPOCHS; epoch++) {
   }
 }
 
-
+mlp.saveModel("./frontend/public/mnist/mlp-mnist-mode.json");
 
