@@ -21,6 +21,14 @@ function oneHotEncode(label) {
   return Array.from({length: 10}, (_, i) => i == label ? 1 : 0)
 }
 
+function shuffleArrays(array1, array2) {
+  for (let i = array1.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array1[i], array1[j]] = [array1[j], array1[i]];
+    [array2[i], array2[j]] = [array2[j], array2[i]];
+  }
+}
+
 class MLP {
   constructor(inputSize, hiddenSize, outputSize, learningRate = 0.01) {
     this.learningRate = learningRate;
@@ -145,8 +153,15 @@ for (let i = 0; i < TEST_BATCHES; i++) {
   testLabels.push(...labels);
 }
 
+const {inputs, labels} =  JSON.parse(fs.readFileSync(`./datasets/mnist/misclassified-data-mlp.json`, "utf8"));
+
+trainInputs.push(...normalizeData(inputs.map(image => image.map(pixel => pixel > 20 ? pixel : 0))));
+trainLabels.push(...labels);
+
 const trainLabelsEncoded = trainLabels.map(label => oneHotEncode(label));
 const testLabelsEncoded = testLabels.map(label => oneHotEncode(label));
+
+shuffleArrays(trainInputs, trainLabelsEncoded);
 
 const inputSize = trainInputs[0].length;
 const hiddenSize = 64;
