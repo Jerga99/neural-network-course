@@ -86,15 +86,32 @@ function ImagePredictionMlp() {
   }
 
   const activationFunction = (sum) => {
-    return sum >= 0 ? 1 : 0;
+    return Math.max(0, sum);
+  }
+
+  const softmax = (outputs) => {
+    const maxOutput = Math.max(...outputs);
+    const expValues = outputs.map(output => Math.exp(output - maxOutput));
+    const sumExpValues = expValues.reduce((sum, val) => sum + val, 0);
+    return expValues.map(val => val / sumExpValues);
   }
 
   const predict = () => {
     const inputs = preprocessCanvas().map(pixel => normalizeData(pixel));
 
-    console.log(model);
+    const hiddenSums = model.weightsInputHidden.map((weights, i) => {
+      return weights.reduce((sum, weight, j) => sum + (weight * inputs[j]), model.biasesHidden[i]);
+    });
 
-    // setPrediction(prediction);
+    const hiddenActivations = hiddenSums.map(z => activationFunction(z));
+
+    const outputSums = model.weightsHiddenOutput.map((weights, i) => {
+      return weights.reduce((sum, weight, j) => sum + (weight * hiddenActivations[j]), model.biasesOutput[i]);
+    });
+
+    const outputProbabilities = softmax(outputSums);
+    const prediction = outputProbabilities.indexOf(Math.max(...outputProbabilities));
+    setPrediction(prediction);
   }
 
   const clearCanvas = () => {
@@ -142,11 +159,11 @@ function ImagePredictionMlp() {
       </div>
       { prediction !== null &&
         <div>
-          Prediction: {prediction === 1 ? "Number is Zero" : "Number is 1 - 9"}
-          <div style={{marginTop: 20}}>
+          Prediction: {prediction}
+          {/* <div style={{marginTop: 20}}>
               <button onClick={() => saveToTrainingSet(1)}>Save - LABEL 1</button>
               <button onClick={() => saveToTrainingSet(0)}>Save - LABEL 0</button>
-          </div>
+          </div> */}
         </div>
       }
     </div>
