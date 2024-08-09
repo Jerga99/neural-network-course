@@ -1,5 +1,6 @@
 
 const fs = require("fs");
+const tf = require("@tensorflow/tfjs-node");
 const seedrandom = require("seedrandom");
 const seed = "perc-1";
 
@@ -52,7 +53,31 @@ function loadData(trainBatches, testBatches) {
   }
 }
 
+function createModel(inputSize, hiddenSize, outputSize, learningRate) {
+  console.log(inputSize);
+  console.log(hiddenSize);
+  console.log(outputSize);
+  console.log(learningRate);
+}
+
 
 const { trainInputs, trainLabels, testInputs, testLabels } = loadData(8, 2);
 
+// 0d -> 42 -> scalar
+// 1d -> [1,2,3,4] -> array
+// 2d -> [[1,2], [3,4]] -> matrix
+// 3d -> [[[1,2], [3,4]], [[7,8], [4,5]]] -> array of matrices
+
+const trainInputsTensor = tf.tensor2d(trainInputs);
+const trainLabelsTensor = tf.tensor2d(trainLabels);
+const testInputsTensor = tf.tensor2d(testInputs);
+const testLabelsTensor = tf.tensor2d(testLabels);
+
+const inputSize = trainInputs[0].length;
+const hiddenSize = 64;
+const outputSize = 10;
+const learningRage = 0.008;
+
+// create TF model
+createModel(inputSize, hiddenSize, outputSize, learningRage);
 
