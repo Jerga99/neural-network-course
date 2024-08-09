@@ -54,10 +54,33 @@ function loadData(trainBatches, testBatches) {
 }
 
 function createModel(inputSize, hiddenSize, outputSize, learningRate) {
-  console.log(inputSize);
-  console.log(hiddenSize);
-  console.log(outputSize);
-  console.log(learningRate);
+  // sequential model is a linear stack of layers, meaning the output of one layer is the input
+  // to the next one. This is suitable for feedforward/forward propagation neural networks
+  const model = tf.sequential();
+
+  // dense: fully connected layer
+  model.add(tf.layers.dense({
+    // number of input neurons
+    inputShape: [inputSize],
+    // units: number of neurons in hidden layer
+    units: hiddenSize,
+    // activation function
+    activation: "relu"
+  }));
+
+  model.add(tf.layers.dense({
+    units: outputSize,
+    activation: "softmax",
+  }));
+
+  model.compile({
+    // we are using in our mlp gradient descent algorithm -> Stochastic Gradient Descent
+    optimizer: tf.train.adam(learningRate),
+    loss: "categoricalCrossentropy",
+    metrics: ["accuracy"]
+  });
+
+  return model;
 }
 
 
@@ -76,8 +99,9 @@ const testLabelsTensor = tf.tensor2d(testLabels);
 const inputSize = trainInputs[0].length;
 const hiddenSize = 64;
 const outputSize = 10;
-const learningRage = 0.008;
+const learningRate = 0.008;
 
 // create TF model
-createModel(inputSize, hiddenSize, outputSize, learningRage);
+const model = createModel(inputSize, hiddenSize, outputSize, learningRate);
+console.log(model);
 
