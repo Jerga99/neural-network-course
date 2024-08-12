@@ -45,11 +45,17 @@ function loadData(trainBatches, testBatches) {
 
   shuffleArrays(trainInputs, trainLabels);
 
+  const validationSize = Math.floor(trainInputs.length * 0.2);
+  const validationInputs = trainInputs.splice(0, validationSize);
+  const validationLabels = trainLabels.splice(0, validationSize);
+
   return {
     trainInputs,
     trainLabels: trainLabels.map(label => oneHotEncode(label)),
     testInputs,
-    testLabels: testLabels.map(label => oneHotEncode(label))
+    testLabels: testLabels.map(label => oneHotEncode(label)),
+    validationInputs,
+    validationLabels: validationLabels.map(label => oneHotEncode(label))
   }
 }
 
@@ -63,10 +69,12 @@ function createModel(inputSize, hiddenSize, outputSize, learningRate) {
     // number of input neurons
     inputShape: [inputSize],
     // units: number of neurons in hidden layer
-    units: hiddenSize,
+    units: hiddenSize * 2,
     // activation function
     activation: "relu"
   }));
+
+  model.add(tf.layers.dropout({rate: 0.1}));
 
   model.add(tf.layers.dense({
     units: outputSize,
@@ -84,7 +92,7 @@ function createModel(inputSize, hiddenSize, outputSize, learningRate) {
 }
 
 
-const { trainInputs, trainLabels, testInputs, testLabels } = loadData(8, 2);
+const { trainInputs, trainLabels, testInputs, testLabels, validationInputs, validationLabels } = loadData(8, 2);
 
 // 0d -> 42 -> scalar
 // 1d -> [1,2,3,4] -> array
@@ -95,12 +103,14 @@ const trainInputsTensor = tf.tensor2d(trainInputs);
 const trainLabelsTensor = tf.tensor2d(trainLabels);
 const testInputsTensor = tf.tensor2d(testInputs);
 const testLabelsTensor = tf.tensor2d(testLabels);
+const validationInputsTensor = tf.tensor2d(validationInputs);
+const validationLabelsTensor = tf.tensor2d(validationLabels);
 
-const EPOCHS = 40;
+const EPOCHS = 25;
 const inputSize = trainInputs[0].length;
 const hiddenSize = 64;
 const outputSize = 10;
-const learningRate = 0.008;
+const learningRate = 0.007;
 
 // create TF model
 const model = createModel(inputSize, hiddenSize, outputSize, learningRate);
@@ -108,7 +118,7 @@ const model = createModel(inputSize, hiddenSize, outputSize, learningRate);
 async function trainModel() {
   await model.fit(trainInputsTensor, trainLabelsTensor, {
     epochs: EPOCHS,
-    validationData: [testInputsTensor, testLabelsTensor]
+    validationData: [validationInputsTensor, validationLabelsTensor]
   });
 
   const results = model.evaluate(testInputsTensor, testLabelsTensor);
