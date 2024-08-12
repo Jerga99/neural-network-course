@@ -80,6 +80,7 @@ function App() {
   return (
     <div className="App">
       <div className="app-container">
+        <h1 className="title">Welcome to AI App</h1>
         <Navigation />
         <Router />
       </div>
