@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Modal from "../../Modal";
 
 
 const WIDTH = 28;
@@ -143,18 +144,18 @@ function ImagePrediction() {
         />
       </div>
       <div>
-        <button onClick={clearCanvas}>Clear</button>
-        <button onClick={predict}>Prediction</button>
+        <button className="predict-button" onClick={predict}>Prediction</button>
       </div>
-      { prediction !== null &&
-        <div>
-          Prediction: {prediction === 1 ? "Number is Zero" : "Number is 1 - 9"}
-          <div style={{marginTop: 20}}>
-              <button onClick={() => saveToTrainingSet(1)}>Save - LABEL 1</button>
-              <button onClick={() => saveToTrainingSet(0)}>Save - LABEL 0</button>
-          </div>
+      <Modal
+         isOpen={prediction != null}
+         title={`Prediction: ${prediction === 1 ? "Number is Zero" : "Number is 1 - 9"}`}
+         onClose={clearCanvas}
+      >
+        <div style={{marginTop: 20}}>
+          <button className="label" onClick={() => saveToTrainingSet(1)}>Save - LABEL 1</button>
+          <button className="label" onClick={() => saveToTrainingSet(0)}>Save - LABEL 0</button>
         </div>
-      }
+      </Modal>
     </div>
   )
 }

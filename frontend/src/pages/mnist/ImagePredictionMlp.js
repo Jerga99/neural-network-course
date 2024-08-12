@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Modal from "../../Modal";
 
 
 const WIDTH = 28;
@@ -154,22 +155,25 @@ function ImagePredictionMlp() {
         />
       </div>
       <div>
-        <button onClick={clearCanvas}>Clear</button>
-        <button onClick={predict}>Prediction</button>
+        <button className="predict-button" onClick={predict}>Prediction</button>
       </div>
-      { prediction !== null &&
-        <div>
-          Prediction: {prediction}
-          <div style={{marginTop: 20}}>
-              {
-                Array.from({length: 10}, (_, i) => i)
-                  .map(label =>
-                    <button onClick={() => saveToTrainingSet(label)}>Save - LABEL {label}</button>
-                  )
-              }
-          </div>
+      <Modal
+        isOpen={prediction != null}
+        title={`Prediction: ${prediction}`}
+        onClose={clearCanvas}
+      >
+        <div style={{marginTop: 20}}>
+            {
+              Array.from({length: 10}, (_, i) => i)
+                .map(label =>
+                  <button
+                    key={label}
+                    className="label"
+                    onClick={() => saveToTrainingSet(label)}>Save - LABEL {label}</button>
+                )
+            }
         </div>
-      }
+      </Modal>
     </div>
   )
 }
