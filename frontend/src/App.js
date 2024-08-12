@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import PreviewTestImages from "./pages/mnist/PreviewTestImages";
 import ImagePrediction from "./pages/mnist/ImagePrediction";
 import ImagePredictionMlp from "./pages/mnist/ImagePredictionMlp";
+import ImagePredictionTensor from "./pages/mnist/ImagePredictionTensor";
 
 function Navigation() {
 
@@ -35,6 +36,11 @@ function Navigation() {
             Image Prediction - Neural Network
           </div>
         </li>
+        <li>
+          <div className="link" onClick={pushState("/mnist/image-prediction-tensor")}>
+            Image Prediction - Tensor
+          </div>
+        </li>
       </ul>
     </nav>
   );
@@ -62,6 +68,8 @@ function Router() {
       return <ImagePrediction />;
     case "/mnist/image-prediction-mlp":
       return <ImagePredictionMlp />;
+    case "/mnist/image-prediction-tensor":
+      return <ImagePredictionTensor />;
     default:
       return <Home />;
   }
