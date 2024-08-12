@@ -26,6 +26,12 @@ code {
   align-items: center;
 }
 
+.navigation {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 40px;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
@@ -56,6 +62,23 @@ li {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 700px;
+  padding: 50px;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 500px;
+  justify-content: center;
+  align-items: center;
 }
 
 .image-container {
