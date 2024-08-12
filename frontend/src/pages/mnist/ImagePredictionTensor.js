@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
+import * as tf from "@tensorflow/tfjs";
 
 const WIDTH = 28;
 const HEIGHT = 28;
@@ -12,9 +12,9 @@ function ImagePredictionTensor() {
   const isDrawingRef = useRef(false);
 
   useEffect(() => {
-    fetch("/mnist/mlp-mnist-model.json")
-      .then(response => response.json())
-      .then(data => setModel(data));
+    tf.loadLayersModel("/mnist/mlp-mnist-model-tf/model.json")
+      .then(model => setModel(model))
+      .catch(err => console.error("Failed to load model: ", err));
   }, []);
 
   useEffect(() => {
@@ -85,32 +85,11 @@ function ImagePredictionTensor() {
     return grayScaleData;
   }
 
-  const activationFunction = (sum) => {
-    return Math.max(0, sum);
-  }
-
-  const softmax = (outputs) => {
-    const maxOutput = Math.max(...outputs);
-    const expValues = outputs.map(output => Math.exp(output - maxOutput));
-    const sumExpValues = expValues.reduce((sum, val) => sum + val, 0);
-    return expValues.map(val => val / sumExpValues);
-  }
-
-  const predict = () => {
+  const predict = async () => {
     const inputs = preprocessCanvas().map(pixel => normalizeData(pixel));
-
-    const hiddenSums = model.weightsInputHidden.map((weights, i) => {
-      return weights.reduce((sum, weight, j) => sum + (weight * inputs[j]), model.biasesHidden[i]);
-    });
-
-    const hiddenActivations = hiddenSums.map(z => activationFunction(z));
-
-    const outputSums = model.weightsHiddenOutput.map((weights, i) => {
-      return weights.reduce((sum, weight, j) => sum + (weight * hiddenActivations[j]), model.biasesOutput[i]);
-    });
-
-    const outputProbabilities = softmax(outputSums);
-    const prediction = outputProbabilities.indexOf(Math.max(...outputProbabilities));
+    const inputTensors = tf.tensor2d([inputs]);
+    const predictions = await model.predict(inputTensors).data();
+    const prediction = predictions.indexOf(Math.max(...predictions));
     setPrediction(prediction);
   }
 
